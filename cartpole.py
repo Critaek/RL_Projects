@@ -40,7 +40,6 @@ def Q_learning(q_table, bins, episodes = 5000, gamma = 0.95, lr = 0.1, timestep 
         while not done: 
             if episode % timestep == 0:
                 env.render()
-                pass
 
             if numpy.random.random() < epsilon: # Randomly choose an action
                 action = env.action_space.sample()
