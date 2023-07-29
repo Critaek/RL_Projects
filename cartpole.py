@@ -2,7 +2,7 @@ import gymnasium as gym
 import numpy
 import time
 
-env = gym.make("CartPole-v1", render_mode="human")
+env = gym.make("CartPole-v1")
 
 state_space = 4 # Each state is defined by 4 different values
 action_space = 2 # I can only make two different actions, left or right
@@ -26,7 +26,7 @@ def Discrete(state, bins):
     return tuple(index)
 
 
-def Q_learning(q_table, bins, episodes = 5000, gamma = 0.95, lr = 0.1, timestep = 1000, epsilon = 0.2):
+def Q_learning(q_table, bins, episodes = 5000, gamma = 0.95, lr = 0.1, timestep = 100, epsilon = 0.2):
     rewards = 0
     steps = 0
 
@@ -39,7 +39,7 @@ def Q_learning(q_table, bins, episodes = 5000, gamma = 0.95, lr = 0.1, timestep 
 
         while not done: 
             if episode % timestep == 0:
-                env.render()
+                pass #env.render()
 
             if numpy.random.random() < epsilon: # Randomly choose an action
                 action = env.action_space.sample()
@@ -61,7 +61,10 @@ def Q_learning(q_table, bins, episodes = 5000, gamma = 0.95, lr = 0.1, timestep 
         else:
             rewards += score # If done, add the reward to the total rewards
             if score > 195 and steps >= 100:
-                print('Solved')
+                print(f"Episode: {episode} -> Solved")
+            if episode % timestep == 0:
+                print(f"Episode: {episode}")
 
-q_table, bins = QTable(state_space, action_space, bin_size=15)
-Q_learning(q_table, bins)
+q_table, bins = QTable(state_space, action_space, bin_size=20)
+print(q_table.shape)
+Q_learning(q_table, bins, episodes=5000)
