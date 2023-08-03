@@ -11,7 +11,7 @@ class DeepQNetwork(nn.Module):
         self.checkpoint_dir = chkpt_dir
         self.checkpoint_file = os.path.join(self.checkpoint_dir, name)
 
-        self.conv1 = nn.Conv2d(input_dims[0], 32, 8, stride=4)
+        self.conv1 = nn.Conv2d(input_dims[2], 32, 8, stride=4)
         self.conv2 = nn.Conv2d(32, 64, 4, stride=2)
         self.conv3 = nn.Conv2d(64, 64, 3, stride=1)
 
@@ -28,17 +28,19 @@ class DeepQNetwork(nn.Module):
 
     def calculate_conv_output_dims(self, input_dims):
         state = T.zeros(1, *input_dims)
+        state = state.permute(0,3,1,2)
         dims = self.conv1(state)
         dims = self.conv2(dims)
         dims = self.conv3(dims)
         return int(np.prod(dims.size()))
 
     def forward(self, state):
+        state = state.permute(0,3,1,2)
         conv1 = F.relu(self.conv1(state))
         conv2 = F.relu(self.conv2(conv1))
         conv3 = F.relu(self.conv3(conv2))
         # conv3 shape is BS x n_filters x H x W
-        conv_state = conv3.view(conv3.size()[0], -1)
+        conv_state = conv3.reshape(conv3.size()[0], -1)
         # conv_state shape is BS x (n_filters * H * W)
         flat1 = F.relu(self.fc1(conv_state))
         actions = self.fc2(flat1)

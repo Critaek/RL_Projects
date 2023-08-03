@@ -1,10 +1,9 @@
 import numpy as np
 from agent import DQNAgent
-from utils import make_env
-from gymnasium import wrappers
+import gymnasium as gym
 
 if __name__ == '__main__':
-    env = make_env("CarRacing-v2")
+    env = gym.make("CarRacing-v2", continuous=False)
 
     best_score = -np.inf
     load_checkpoint = False
@@ -12,7 +11,7 @@ if __name__ == '__main__':
 
     agent = DQNAgent(gamma=0.99, epsilon=1, lr=0.0001,
                      input_dims=(env.observation_space.shape),
-                     n_actions=env.action_space.shape[0], mem_size=50000, eps_min=0.1,
+                     n_actions=5, mem_size=50000, eps_min=0.1,
                      batch_size=32, replace=1000, eps_dec=1e-5,
                      chkpt_dir='models/', algo='DQNAgent',
                      env_name='CarRacing-v2')
@@ -29,12 +28,14 @@ if __name__ == '__main__':
 
     for i in range(n_games):
         done = False
-        observation = env.reset()
-
+        observation, info = env.reset()
+        terminated = False
+        truncated = False
+        
         score = 0
-        while not done:
+        while not terminated or not truncated:
             action = agent.choose_action(observation)
-            observation_, reward, done, info = env.step(action)
+            observation_, reward, terminated, truncated, info = env.step(action)
             score += reward
 
             if not load_checkpoint:
