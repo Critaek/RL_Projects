@@ -29,13 +29,12 @@ if __name__ == '__main__':
     for i in range(n_games):
         done = False
         observation, info = env.reset()
-        terminated = False
-        truncated = False
-        
+
         score = 0
-        while not terminated or not truncated:
+        while not done:
             action = agent.choose_action(observation)
             observation_, reward, terminated, truncated, info = env.step(action)
+            done = terminated or truncated
             score += reward
 
             if not load_checkpoint:
@@ -44,6 +43,8 @@ if __name__ == '__main__':
                 agent.learn()
             observation = observation_
             n_steps += 1
+            if n_steps % 100 == 0:
+                print('steps: ', n_steps)
         scores.append(score)
         steps_array.append(n_steps)
 
