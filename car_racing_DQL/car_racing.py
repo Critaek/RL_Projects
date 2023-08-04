@@ -7,11 +7,12 @@ if __name__ == '__main__':
 
     best_score = 27
     load_checkpoint = False
-    n_games = 500
+    n_games = 250
+    force_train = True
 
     agent = DQNAgent(gamma=0.99, epsilon=0.1, lr=0.0001,
                      input_dims=(env.observation_space.shape),
-                     n_actions=5, mem_size=50000, eps_min=0.0,
+                     n_actions=5, mem_size=50000, eps_min=0.1,
                      batch_size=32, replace=1000, eps_dec=1e-5,
                      chkpt_dir='models/', algo='DQNAgent',
                      env_name='CarRacing-v2')
@@ -37,7 +38,7 @@ if __name__ == '__main__':
             done = terminated or truncated
             score += reward
 
-            if not load_checkpoint:
+            if not load_checkpoint or force_train:
                 agent.store_transition(observation, action,
                                             reward, observation_, done)
                 agent.learn()
