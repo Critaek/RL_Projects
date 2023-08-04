@@ -6,7 +6,7 @@ if __name__ == '__main__':
     env = gym.make("CarRacing-v2", continuous=False)
 
     best_score = 27
-    load_checkpoint = True
+    load_checkpoint = False
     n_games = 500
 
     agent = DQNAgent(gamma=0.99, epsilon=0.1, lr=0.0001,
@@ -37,9 +37,10 @@ if __name__ == '__main__':
             done = terminated or truncated
             score += reward
 
-            agent.store_transition(observation, action,
-                                    reward, observation_, done)
-            agent.learn()
+            if not load_checkpoint
+                agent.store_transition(observation, action,
+                                            reward, observation_, done)
+                agent.learn()
             observation = observation_
             n_steps += 1
         scores.append(score)
@@ -51,7 +52,8 @@ if __name__ == '__main__':
             'epsilon %.2f' % agent.epsilon, 'steps', n_steps)
 
         if avg_score > best_score:
-            agent.save_models()
+            if not load_checkpoint:
+                agent.save_models()
             best_score = avg_score
 
         eps_history.append(agent.epsilon)
