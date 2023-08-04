@@ -5,13 +5,13 @@ import gymnasium as gym
 if __name__ == '__main__':
     env = gym.make("CarRacing-v2", continuous=False)
 
-    best_score = -np.inf
-    load_checkpoint = False
-    n_games = 250
+    best_score = 27
+    load_checkpoint = True
+    n_games = 500
 
-    agent = DQNAgent(gamma=0.99, epsilon=1, lr=0.0001,
+    agent = DQNAgent(gamma=0.99, epsilon=0.1, lr=0.0001,
                      input_dims=(env.observation_space.shape),
-                     n_actions=5, mem_size=50000, eps_min=0.1,
+                     n_actions=5, mem_size=50000, eps_min=0.0,
                      batch_size=32, replace=1000, eps_dec=1e-5,
                      chkpt_dir='models/', algo='DQNAgent',
                      env_name='CarRacing-v2')
@@ -37,14 +37,11 @@ if __name__ == '__main__':
             done = terminated or truncated
             score += reward
 
-            if not load_checkpoint:
-                agent.store_transition(observation, action,
-                                     reward, observation_, done)
-                agent.learn()
+            agent.store_transition(observation, action,
+                                    reward, observation_, done)
+            agent.learn()
             observation = observation_
             n_steps += 1
-            if n_steps % 100 == 0:
-                print('steps: ', n_steps)
         scores.append(score)
         steps_array.append(n_steps)
 
@@ -54,8 +51,7 @@ if __name__ == '__main__':
             'epsilon %.2f' % agent.epsilon, 'steps', n_steps)
 
         if avg_score > best_score:
-            if not load_checkpoint:
-                agent.save_models()
+            agent.save_models()
             best_score = avg_score
 
         eps_history.append(agent.epsilon)
