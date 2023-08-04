@@ -37,7 +37,7 @@ if __name__ == '__main__':
             done = terminated or truncated
             score += reward
 
-            if not load_checkpoint
+            if not load_checkpoint:
                 agent.store_transition(observation, action,
                                             reward, observation_, done)
                 agent.learn()
