@@ -5,7 +5,7 @@ import gymnasium as gym
 if __name__ == '__main__':
     env = gym.make("CarRacing-v2", continuous=False)
 
-    best_score = 27
+    best_score = -np.inf
     load_checkpoint = False
     n_games = 250
     force_train = True
