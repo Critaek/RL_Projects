@@ -48,9 +48,10 @@ if __name__ == '__main__':
         steps_array.append(n_steps)
 
         avg_score = np.mean(scores[-100:])
+        time_taken = time.time() - start
         print('episode: ', i,'score: ', score,
              ' average score %.1f' % avg_score, 'best score %.2f' % best_score,
-            'epsilon %.2f' % agent.epsilon, 'steps', n_steps)
+            'epsilon %.2f' % agent.epsilon, 'steps', n_steps, 'time %.2f' % time_taken)
 
         if avg_score > best_score:
             if not load_checkpoint or force_train:
