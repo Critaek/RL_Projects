@@ -35,7 +35,7 @@ if __name__ == '__main__':
         while not done:
             action = agent.choose_action(observation)
             observation_, reward, terminated, truncated, info = env.step(action)
-            done = terminated or truncated
+            done = terminated
             score += reward
 
             if not load_checkpoint or force_train:
