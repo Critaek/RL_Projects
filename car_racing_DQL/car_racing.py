@@ -1,6 +1,7 @@
 import numpy as np
 from agent import DQNAgent
 import gymnasium as gym
+import time
 
 if __name__ == '__main__':
     env = gym.make("CarRacing-v2", continuous=False)
