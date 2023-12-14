@@ -29,6 +29,7 @@ if __name__ == '__main__':
     scores, eps_history, steps_array = [], [], []
 
     for i in range(n_games):
+        start = time.time()
         done = False
         observation, info = env.reset()
 
